@@ -1,0 +1,23 @@
+{
+  "name": "cloudy",
+  "version": "1.0.0",
+  "description": "A fast minimalist weather app that leverages existing apis and a caching system to provide users with the most upto date information, using the least resources and consuming the least time.",
+  "homepage": "https://github.com/venemousCoder/cloudy#readme",
+  "bugs": {
+    "url": "https://github.com/venemousCoder/cloudy/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/venemousCoder/cloudy.git"
+  },
+  "license": "MIT",
+  "author": "Ahmad Dalha (venemousCoder)",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
