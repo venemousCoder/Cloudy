@@ -4,7 +4,7 @@ const axios = require("axios");
 
 async function getWeather(req, res) {
   try {
-    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+    let ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
     // Get location info from IP
     if (ip.includes(",")) {
@@ -12,9 +12,10 @@ async function getWeather(req, res) {
     }
 
     // Handle IPv6 localhost
-    if (ip === "::1" || ip === "127.0.0.1") {
+    if (ip === "::ffff:127.0.0.1" || ip === "127.0.0.1") {
       ip = "8.8.8.8"; // fallback IP
     }
+    console.log("IP: ", ip);
     const geoRes = await axios.get(`http://ip-api.com/json/${ip}`);
     const { city, lat, lon } = geoRes.data;
     console.log("Geo location response:", geoRes.data);
@@ -67,7 +68,7 @@ async function getWeather(req, res) {
       forecast: forecast.slice(0, 4),
     };
 
-    res.render("weather", { weather });
+    res.render("index", { weather });
   } catch (err) {
     console.error(err);
     res.status(500).render("error", { error: err.message });

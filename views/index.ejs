@@ -29,7 +29,7 @@
       <section class="weather-today">
         <h3>Weather Today</h3>
         <div class="forecast-row">
-        <% weather.forecast.forEach(f => { %>
+        <% weather.forecast?.forEach(f => { %>
             <div class="forecast-block">
             <span><%= f?.icon %></span>
             <span><%= f?.time %></span>
