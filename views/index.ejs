@@ -18,7 +18,7 @@
       </header>
 
       <div class="temp-display">
-        <h2><%= weather?.temperature || '23' %>°</h2>
+        <h2><%= Math.floor(weather?.temperature) || '23' %>°</h2>
         <p><%= weather?.description || "It's Sunny" %></p>
       </div>
 
@@ -29,26 +29,14 @@
       <section class="weather-today">
         <h3>Weather Today</h3>
         <div class="forecast-row">
-          <div class="forecast-block">
-            <span>🌤️</span>
-            <span>05:00</span>
-            <span>23°</span>
-          </div>
-          <div class="forecast-block">
-            <span>☁️</span>
-            <span>06:00</span>
-            <span>16°</span>
-          </div>
-          <div class="forecast-block">
-            <span>🌧️</span>
-            <span>07:00</span>
-            <span>3°</span>
-          </div>
-          <div class="forecast-block">
-            <span>☀️</span>
-            <span>08:00</span>
-            <span>23°</span>
-          </div>
+        <% weather.forecast.forEach(f => { %>
+            <div class="forecast-block">
+            <span><%= f?.icon %></span>
+            <span><%= f?.time %></span>
+            <span><%= Math.floor(f?.temp) %>°</span>
+            </div>
+        <% }) %>
+</div>
         </div>
       </section>
     </section>

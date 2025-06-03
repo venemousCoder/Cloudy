@@ -25,6 +25,7 @@
     "express": "^5.1.0",
     "express-ejs-layouts": "^2.5.1",
     "geoip-lite": "^1.4.10",
-    "memcached": "^2.2.2"
+    "memcached": "^2.2.2",
+    "openmeteo": "^1.2.0"
   }
 }

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Forecast</title>
+  <link rel="stylesheet" href="/public/css/weather.css">
+</head>
+<body>
+  <div class="container">
+    <section class="forecast">
+      <h2>Hourly Temperature Forecast</h2>
+      <ul>
+        <% for(let i = 0; i < weatherData.hourly.time.length; i++) { %>
+          <li>
+            <strong><%= weatherData.hourly.time[i].toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %></strong>
+            : <%= weatherData.hourly.temperature2m[i] %> °C
+          </li>
+        <% } %>
+      </ul>
+    </section>
+  </div>
+</body>
+</html>
