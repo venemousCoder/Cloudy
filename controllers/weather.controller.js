@@ -1,24 +1,27 @@
 const geoip = require("geoip-lite");
 const { fetchWeatherApi } = require("openmeteo");
 const axios = require("axios");
+const {memGet, memSet} = require("../utils/cache");
 
 async function getWeather(req, res) {
   try {
     let ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
-    // Get location info from IP
-    if (ip.includes(",")) {
-      ip = ip.split(",")[0].trim();
+    if (ip.includes(",")) ip = ip.split(",")[0].trim();
+    if (ip === "::ffff:127.0.0.1" || ip === "127.0.0.1") ip = "8.8.8.8";
+
+    const cacheKey = `weather_${ip}`;
+
+    // ✅ Use the promisified version
+    const cachedData = await memGet(cacheKey);
+    if (cachedData) {
+      console.log("🌩️ Serving from cache!");
+      return res.render("index", { weather: JSON.parse(cachedData) });
     }
 
-    // Handle IPv6 localhost
-    if (ip === "::ffff:127.0.0.1" || ip === "127.0.0.1") {
-      ip = "8.8.8.8"; // fallback IP
-    }
-    console.log("IP: ", ip);
+    console.log("🌦️ Fetching fresh weather data for:", ip);
     const geoRes = await axios.get(`http://ip-api.com/json/${ip}`);
     const { city, lat, lon } = geoRes.data;
-    console.log("Geo location response:", geoRes.data);
 
     const params = {
       latitude: lat,
@@ -41,7 +44,9 @@ async function getWeather(req, res) {
     ].map(
       (_, i) =>
         new Date(
-          (Number(hourly.time()) + i * hourly.interval() + utcOffsetSeconds) *
+          (Number(hourly.time()) +
+            i * hourly.interval() +
+            utcOffsetSeconds) *
             1000
         )
     );
@@ -49,9 +54,12 @@ async function getWeather(req, res) {
     const temps = hourly.variables(0).valuesArray();
 
     const forecast = times.map((time, index) => ({
-      time: time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      time: time.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
       temp: temps[index],
-      icon: "☀️", // still hardcoded unless you want to use weather codes
+      icon: "☀️",
     }));
 
     const weather = {
@@ -64,9 +72,12 @@ async function getWeather(req, res) {
         minute: "2-digit",
       }),
       temperature: temps[0],
-      description: "Sunny", // you can map Open-Meteo weather codes for this
+      description: "Sunny",
       forecast: forecast.slice(0, 4),
     };
+
+    // ✅ Set to cache with TTL (600 seconds = 10 min)
+    await memSet(cacheKey, JSON.stringify(weather), 600);
 
     res.render("index", { weather });
   } catch (err) {
@@ -74,6 +85,8 @@ async function getWeather(req, res) {
     res.status(500).render("error", { error: err.message });
   }
 }
+
+
 
 module.exports = {
   getWeather,

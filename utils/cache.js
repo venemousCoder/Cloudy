@@ -1,5 +1,9 @@
 // utils/cache.js
-const Memcached = require('memcached');
-const memcached = new Memcached('localhost:11211'); // adjust host if needed
+const { promisify } = require("util");
+const Memcached = require("memcached");
+const memcached = new Memcached("localhost:11211");
 
-module.exports = memcached;
+const memGet = promisify(memcached.get).bind(memcached);
+const memSet = promisify(memcached.set).bind(memcached); // adjust host if needed
+
+module.exports = {memGet, memSet};
