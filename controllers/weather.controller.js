@@ -76,8 +76,8 @@ async function getWeather(req, res) {
       forecast: forecast.slice(0, 4),
     };
 
-    // ✅ Set to cache with TTL (600 seconds = 10 min)
-    await memSet(cacheKey, JSON.stringify(weather), 600);
+    // ✅ Set to cache with TTL (60 seconds = 1 min)
+    await memSet(cacheKey, JSON.stringify(weather), 60);
 
     res.render("index", { weather });
   } catch (err) {
