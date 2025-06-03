@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vortex</title>
+  <link rel="stylesheet" href="/public/css/index.css" />
+</head>
+<body>
+  <main class="container">
+    <section class="weather-card">
+      <header class="weather-header">
+        <div>
+          <h1><%= weather?.city || 'Tuscany' %></h1>
+          <p><%= weather?.date || 'Today, Oct 18 15:10' %></p>
+        </div>
+        <div class="menu-icon">☰</div>
+      </header>
+
+      <div class="temp-display">
+        <h2><%= weather?.temperature || '23' %>°</h2>
+        <p><%= weather?.description || "It's Sunny" %></p>
+      </div>
+
+      <div class="scenery">
+        <img src="/public/assets/scenery.png" alt="Weather scenery" />
+      </div>
+
+      <section class="weather-today">
+        <h3>Weather Today</h3>
+        <div class="forecast-row">
+          <div class="forecast-block">
+            <span>🌤️</span>
+            <span>05:00</span>
+            <span>23°</span>
+          </div>
+          <div class="forecast-block">
+            <span>☁️</span>
+            <span>06:00</span>
+            <span>16°</span>
+          </div>
+          <div class="forecast-block">
+            <span>🌧️</span>
+            <span>07:00</span>
+            <span>3°</span>
+          </div>
+          <div class="forecast-block">
+            <span>☀️</span>
+            <span>08:00</span>
+            <span>23°</span>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>
