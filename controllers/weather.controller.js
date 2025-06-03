@@ -1,5 +1,5 @@
 const geoip = require("geoip-lite");
-const { fetchWeatherApi } =  require("openmeteo");
+const { fetchWeatherApi } = require("openmeteo");
 const axios = require("axios");
 
 async function getWeather(req, res) {
@@ -7,6 +7,14 @@ async function getWeather(req, res) {
     const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
     // Get location info from IP
+    if (ip.includes(",")) {
+      ip = ip.split(",")[0].trim();
+    }
+
+    // Handle IPv6 localhost
+    if (ip === "::1" || ip === "127.0.0.1") {
+      ip = "8.8.8.8"; // fallback IP
+    }
     const geoRes = await axios.get(`http://ip-api.com/json/${ip}`);
     const { city, lat, lon } = geoRes.data;
     console.log("Geo location response:", geoRes.data);
@@ -62,12 +70,9 @@ async function getWeather(req, res) {
     res.render("weather", { weather });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Could not get weather data");
+    res.status(500).render("error", { error: err.message });
   }
 }
-
-
-
 
 module.exports = {
   getWeather,
