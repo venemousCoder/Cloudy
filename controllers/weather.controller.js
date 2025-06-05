@@ -1,7 +1,10 @@
 const geoip = require("geoip-lite");
 const { fetchWeatherApi } = require("openmeteo");
 const axios = require("axios");
-const {memGet, memSet} = require("../utils/cache");
+const NodeCache = require("node-cache");
+// ✅ Set to cache with TTL (60 seconds = 1 min)
+const nodeCache = new NodeCache({ stdTTL: 60 });
+
 
 async function getWeather(req, res) {
   try {
@@ -13,7 +16,7 @@ async function getWeather(req, res) {
     const cacheKey = `weather_${ip}`;
 
     // ✅ Use the promisified version
-    const cachedData = await memGet(cacheKey);
+    const cachedData =  nodeCache.get(cacheKey);
     if (cachedData) {
       console.log("🌩️ Serving from cache!");
       return res.render("index", { weather: JSON.parse(cachedData) });
@@ -76,8 +79,8 @@ async function getWeather(req, res) {
       forecast: forecast.slice(0, 4),
     };
 
-    // ✅ Set to cache with TTL (60 seconds = 1 min)
-    await memSet(cacheKey, JSON.stringify(weather), 60);
+    
+     nodeCache.set(cacheKey, JSON.stringify(weather));
 
     res.render("index", { weather });
   } catch (err) {
